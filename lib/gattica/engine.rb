@@ -48,8 +48,8 @@ module Gattica
         # get profiles
         response = do_http_get("/analytics/v2.4/management/accounts/~all/webproperties/~all/profiles?max-results=10000")
         xml = Hpricot(response)
-        @user_accounts = xml.search(:entry).collect { |profile_xml| 
-          Account.new(profile_xml) 
+        @user_accounts = xml.search(:entry).collect { |profile_xml|
+          Account.new(profile_xml)
         }
 
         # Fill in the goals
@@ -88,8 +88,8 @@ module Gattica
       if @user_segments.nil?
         response = do_http_get("/analytics/v2.4/management/segments?max-results=10000")
         xml = Hpricot(response)
-        @user_segments = xml.search("dxp:segment").collect { |s| 
-          Segment.new(s) 
+        @user_segments = xml.search("dxp:segment").collect { |s|
+          Segment.new(s)
         }
       end
       return @user_segments
@@ -156,7 +156,7 @@ module Gattica
     # sure it's valid and not an error
 
     def do_http_get(query_string)
-      response, data = @http.get(query_string, @headers)
+      response = @http.get(query_string, @headers)
 
       # error checking
       if response.code != '200'
@@ -170,7 +170,7 @@ module Gattica
         end
       end
 
-      return data
+      return response.body
     end
 
 
