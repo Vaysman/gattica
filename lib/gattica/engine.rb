@@ -2,7 +2,7 @@ module Gattica
   class Engine
 
     attr_reader :user
-    attr_accessor :profile_id, :token, :user_accounts
+    attr_accessor :profile_id, :token, :user_accounts, :api_key
 
     # Initialize Gattica using username/password or token.
     #
@@ -135,7 +135,7 @@ module Gattica
       query_string = build_query_string(args,@profile_id)
       @logger.debug(query_string) if @debug
       create_http_connection('www.googleapis.com')
-      data = do_http_get("/analytics/v2.4/data?#{query_string}")
+      data = do_http_get("/analytics/v2.4/data?#{query_string}&key=#{@api_key}")
       return DataSet.new(Hpricot.XML(data))
     end
 
@@ -272,9 +272,9 @@ module Gattica
       @profile_id = options[:profile_id]
       @user_accounts = nil # filled in later if the user ever calls Gattica::Engine#accounts
       @user_segments = nil
+      @api_key = options[:api_key]
       @headers = { }.merge(options[:headers]) # headers used for any HTTP requests (Google requires a special 'Authorization' header which is set any time @token is set)
       @default_account_feed = nil
-
     end
 
     # If the authorization is a email and password then create User objects
